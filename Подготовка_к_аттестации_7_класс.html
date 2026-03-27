@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подготовка к аттестации — Информатика 7 класс</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f1729;--card:#1a2340;--card2:#1e2a4a;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--red:#e17055;--orange:#fdcb6e;--text:#dfe6e9;--muted:#636e72;--border:#2d3561;--glow:rgba(108,92,231,0.15)}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.container{max-width:860px;margin:0 auto;padding:16px}
+
+/* Header */
+.header{text-align:center;padding:32px 0 24px;position:relative}
+.header h1{font-size:1.8em;font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.header p{color:var(--muted);font-size:0.95em}
+.timer-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;padding:10px 20px;background:var(--card);border-radius:12px;display:inline-flex}
+.timer-bar .icon{font-size:1.3em}
+.timer-bar .time{font-family:'JetBrains Mono',monospace;font-size:1.2em;font-weight:700;color:var(--orange)}
+.timer-bar .label{color:var(--muted);font-size:0.85em}
+
+/* Progress */
+.progress-wrap{margin:20px 0;background:var(--card);border-radius:10px;padding:12px 16px}
+.progress-info{display:flex;justify-content:space-between;font-size:0.85em;color:var(--muted);margin-bottom:8px}
+.progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width 0.5s ease}
+
+/* Topic nav */
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:16px 0}
+.topic-btn{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.8em;font-weight:600;color:var(--text)}
+.topic-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.topic-btn.done{border-color:var(--green);background:rgba(0,184,148,0.1)}
+.topic-btn.done::after{content:' ✓';color:var(--green)}
+.topic-btn.active{border-color:var(--accent);background:var(--glow);box-shadow:0 0 20px var(--glow)}
+
+/* Topic card */
+.topic-card{display:none;background:var(--card);border-radius:16px;padding:24px;margin:16px 0;border:1px solid var(--border);animation:fadeIn 0.3s ease}
+.topic-card.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.topic-card h2{font-size:1.3em;font-weight:800;margin-bottom:4px;color:var(--accent2)}
+.topic-card .tag{display:inline-block;font-size:0.7em;padding:3px 10px;border-radius:20px;background:var(--accent);color:#fff;font-weight:700;margin-bottom:16px}
+
+/* Theory */
+.theory{background:var(--card2);border-radius:12px;padding:18px;margin:16px 0;border-left:4px solid var(--accent);line-height:1.7;font-size:0.93em}
+.theory h3{color:var(--orange);font-size:1.05em;margin-bottom:8px}
+.theory p{margin-bottom:10px}
+.theory .highlight{background:rgba(108,92,231,0.2);padding:2px 8px;border-radius:4px;font-weight:700;color:var(--accent2)}
+.theory .formula{font-family:'JetBrains Mono',monospace;background:rgba(0,184,148,0.15);padding:8px 14px;border-radius:8px;margin:8px 0;font-size:0.9em;color:var(--green);display:block}
+.theory ul{margin:8px 0 8px 20px}
+.theory li{margin-bottom:4px}
+.theory .example{background:rgba(253,203,110,0.1);border:1px solid rgba(253,203,110,0.3);border-radius:8px;padding:12px;margin:10px 0}
+.theory .example strong{color:var(--orange)}
+
+/* Practice */
+.practice{background:var(--card2);border-radius:12px;padding:18px;margin:16px 0;border-left:4px solid var(--green)}
+.practice h3{color:var(--green);font-size:1.05em;margin-bottom:12px}
+.practice .question{font-size:0.95em;margin-bottom:14px;line-height:1.6}
+.practice input[type="text"]{width:100%;max-width:400px;padding:10px 14px;background:var(--bg);border:2px solid var(--border);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1em;outline:none;transition:border-color 0.2s}
+.practice input[type="text"]:focus{border-color:var(--accent)}
+.practice .options{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.practice .opt{padding:10px 14px;background:var(--bg);border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.9em}
+.practice .opt:hover{border-color:var(--accent2);background:var(--glow)}
+.practice .opt.selected{border-color:var(--accent);background:var(--glow)}
+.practice .opt.correct{border-color:var(--green);background:rgba(0,184,148,0.15)}
+.practice .opt.wrong{border-color:var(--red);background:rgba(225,112,85,0.15)}
+
+/* Buttons */
+.btn{padding:10px 24px;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9em;cursor:pointer;transition:all 0.2s}
+.btn-check{background:var(--accent);color:#fff}
+.btn-check:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-next{background:var(--green);color:#fff;margin-left:8px}
+.btn-next:hover{opacity:0.9}
+.btn-retry{background:var(--orange);color:var(--bg);margin-left:8px}
+.btn-row{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+
+/* Feedback */
+.feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-weight:600;font-size:0.9em;display:none}
+.feedback.show{display:block;animation:fadeIn 0.3s ease}
+.feedback.ok{background:rgba(0,184,148,0.15);border:1px solid var(--green);color:var(--green)}
+.feedback.fail{background:rgba(225,112,85,0.15);border:1px solid var(--red);color:var(--red)}
+
+/* Finish */
+.finish-screen{display:none;text-align:center;padding:48px 24px}
+.finish-screen.visible{display:block}
+.finish-screen h2{font-size:2em;margin-bottom:12px;background:linear-gradient(135deg,var(--green),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.finish-screen .score{font-size:3em;font-weight:800;color:var(--green);margin:16px 0}
+.finish-screen p{color:var(--muted);font-size:1em;margin-bottom:24px}
+
+@media(max-width:600px){
+  .container{padding:10px}
+  .topics-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .topic-btn{font-size:0.7em;padding:8px 4px}
+  .header h1{font-size:1.4em}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🎯 Подготовка к аттестации</h1>
+    <p>Информатика · 7 класс · 12 тем</p>
+    <div class="timer-bar">
+      <span class="icon">⏱️</span>
+      <span class="time" id="timer">40:00</span>
+      <span class="label">осталось</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span>Прогресс</span>
+      <span id="prog-text">0 / 12</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="topics-grid" id="topics-grid"></div>
+  <div id="topic-area"></div>
+
+  <div class="finish-screen" id="finish">
+    <h2>🎉 Подготовка завершена!</h2>
+    <div class="score" id="final-score"></div>
+    <p>Ты повторил все 12 тем. Удачи на аттестации!</p>
+    <button class="btn btn-check" onclick="location.reload()">Пройти ещё раз</button>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+  {
+    id:1, title:"А1 · Свойства информации", tag:"Часть А", 
+    theory:`<h3>Свойства информации</h3>
+<p>Информация может обладать разными свойствами. Запомни основные:</p>
+<ul>
+<li><span class="highlight">Достоверность</span> — информация отражает <b>истинное</b> положение дел, не содержит ошибок</li>
+<li><span class="highlight">Актуальность</span> — информация <b>вовремя</b> получена, не устарела</li>
+<li><span class="highlight">Полнота</span> — информации <b>достаточно</b> для принятия решения</li>
+<li><span class="highlight">Понятность</span> — информация <b>понятна</b> получателю (на знакомом языке, в понятной форме)</li>
+<li><span class="highlight">Полезность</span> — информация <b>нужна</b> получателю</li>
+</ul>
+<div class="example"><strong>Пример:</strong> Прогноз погоды на завтра — актуальная информация. Прогноз погоды на прошлый месяц — неактуальная.</div>`,
+    type:"options",
+    question:"Какое свойство информации означает, что её достаточно для принятия решения?",
+    options:["актуальность","достоверность","полнота","понятность"],
+    answer:2
+  },
+  {
+    id:2, title:"А2 · Единицы измерения", tag:"Часть А",
+    theory:`<h3>Единицы измерения информации</h3>
+<p>Информация измеряется в битах и байтах. Запомни цепочку:</p>
+<span class="formula">1 байт = 8 бит<br>1 Кбайт = 1024 байт<br>1 Мбайт = 1024 Кбайт<br>1 Гбайт = 1024 Мбайт<br>1 Тбайт = 1024 Гбайт</span>
+<p>По возрастанию: <b>бит → байт → Кбайт → Мбайт → Гбайт → Тбайт</b></p>
+<div class="example"><strong>Запомни:</strong> множитель всегда <b>1024</b> (это 2¹⁰), а не 1000!</div>`,
+    type:"options",
+    question:"Сколько бит содержится в 3 байтах?",
+    options:["3","8","16","24"],
+    answer:3
+  },
+  {
+    id:3, title:"А3 · Виды ПО", tag:"Часть А",
+    theory:`<h3>Программное обеспечение и его назначение</h3>
+<p>Каждая программа создана для определённой задачи:</p>
+<ul>
+<li><b>Текстовый процессор</b> (Word) — создание и редактирование документов</li>
+<li><b>Табличный процессор</b> (Excel) — таблицы, расчёты, диаграммы</li>
+<li><b>Редактор презентаций</b> (PowerPoint) — создание слайдов</li>
+<li><b>Графический редактор</b> (Paint, Photoshop) — обработка изображений</li>
+<li><b>Браузер</b> (Chrome, Firefox) — просмотр веб-страниц, поиск в интернете</li>
+<li><b>Видеоредактор</b> — монтаж видео</li>
+<li><b>Блокнот</b> — простой текстовый редактор</li>
+</ul>
+<div class="example"><strong>Подсказка:</strong> Если нужно построить диаграмму — это <b>Excel</b>. Если найти информацию — <b>Браузер</b>. Если собрать слайды — <b>PowerPoint</b>.</div>`,
+    type:"options",
+    question:"В какой программе удобнее всего построить диаграмму по данным о продажах?",
+    options:["Word","PowerPoint","Браузер","Excel"],
+    answer:3
+  },
+  {
+    id:4, title:"А4 · Устройства ПК", tag:"Часть А",
+    theory:`<h3>Компоненты компьютера</h3>
+<p>Основные устройства и их назначение:</p>
+<ul>
+<li><b>Процессор</b> — <span class="highlight">обрабатывает</span> данные (мозг компьютера)</li>
+<li><b>Оперативная память (ОЗУ)</b> — <span class="highlight">временное</span> хранение данных (при выключении очищается)</li>
+<li><b>Жёсткий диск (HDD/SSD)</b> — <span class="highlight">долговременное</span> хранение данных</li>
+<li><b>Клавиатура, мышь</b> — устройства <span class="highlight">ввода</span></li>
+<li><b>Монитор, принтер</b> — устройства <span class="highlight">вывода</span></li>
+</ul>
+<div class="example"><strong>Ловушка:</strong> Оперативная память — это НЕ долговременное хранение! При выключении ПК данные из неё пропадают.</div>`,
+    type:"options",
+    question:"Какое устройство является «мозгом» компьютера и выполняет все вычисления?",
+    options:["жёсткий диск","оперативная память","процессор","монитор"],
+    answer:2
+  },
+  {
+    id:5, title:"А5 · Антивирусы", tag:"Часть А",
+    theory:`<h3>Защита от вирусов</h3>
+<p>Компьютерный вирус — это вредоносная программа, которая может повредить данные, украсть информацию или замедлить работу ПК.</p>
+<p><b>Антивирусная программа</b> — специальное ПО для обнаружения и удаления вирусов.</p>
+<p>Примеры антивирусов: <span class="highlight">Kaspersky</span>, Dr.Web, Avast, Norton, ESET NOD32.</p>
+<p>НЕ являются антивирусами: WinRAR (архиватор), Paint (графический редактор), PowerPoint (презентации), Excel (таблицы).</p>`,
+    type:"options",
+    question:"Какая из программ является антивирусной?",
+    options:["7-Zip","Dr.Web","Excel","Chrome"],
+    answer:1
+  },
+  {
+    id:6, title:"А6 · Поисковые запросы", tag:"Часть А",
+    theory:`<h3>Логические связки в поисковых запросах</h3>
+<p>При поиске в интернете можно использовать логические операторы:</p>
+<ul>
+<li><span class="highlight">AND (И)</span> — ищет страницы, где есть <b>ОБА</b> слова → результатов <b>меньше</b> (сужает поиск)</li>
+<li><span class="highlight">OR (ИЛИ)</span> — ищет страницы, где есть <b>ХОТЯ БЫ ОДНО</b> слово → результатов <b>больше</b> (расширяет поиск)</li>
+<li><span class="highlight">NOT (НЕ)</span> — исключает страницы с определённым словом → результатов <b>меньше</b></li>
+</ul>
+<div class="example"><strong>Запомни просто:</strong> AND = сужает (меньше результатов), OR = расширяет (больше результатов).</div>`,
+    type:"options",
+    question:"Использование оператора NOT (НЕ) в поисковом запросе приводит к тому, что количество найденных страниц:",
+    options:["увеличивается","уменьшается","не изменяется","обнуляется"],
+    answer:1
+  },
+  {
+    id:7, title:"А7 · Расширения файлов", tag:"Часть А",
+    theory:`<h3>Типы файлов и расширения</h3>
+<p>Расширение файла (после точки) указывает на его тип:</p>
+<ul>
+<li><b>.docx, .doc</b> — текстовый документ (Word)</li>
+<li><b>.xlsx</b> — электронная таблица (Excel)</li>
+<li><b>.pptx</b> — презентация (PowerPoint)</li>
+<li><b>.html</b> — веб-страница</li>
+<li><b>.jpg, .png, .gif, .bmp</b> — изображения</li>
+<li><b>.mp3, .wav</b> — звук</li>
+<li><b>.mp4, .avi, .mkv</b> — видео</li>
+<li><b>.zip, .rar, .7z</b> — архив</li>
+<li><b>.exe</b> — программа (исполняемый файл)</li>
+<li><b>.pdf</b> — документ PDF</li>
+</ul>`,
+    type:"text",
+    question:"Соотнеси: 1. .mp3 — 2. .zip. Варианты: А) Архив, Б) Изображение, В) Звук, Г) Презентация. Запиши ответ в виде двух букв (например: ВА).",
+    answer:"ВА"
+  },
+  {
+    id:8, title:"В1 · URL-адрес", tag:"Часть В",
+    theory:`<h3>Структура URL-адреса</h3>
+<p>Каждый адрес в интернете строится по шаблону:</p>
+<span class="formula">протокол://сервер.домен/файл</span>
+<p>Например: <b>https://education.ru/school.html</b></p>
+<ul>
+<li><b>https</b> — протокол (бывает http, https, ftp)</li>
+<li><b>://</b> — разделитель после протокола (всегда!)</li>
+<li><b>education</b> — имя сервера</li>
+<li><b>.ru</b> — доменная зона</li>
+<li><b>/</b> — разделитель перед файлом</li>
+<li><b>school.html</b> — имя файла с расширением</li>
+</ul>
+<div class="example"><strong>Алгоритм сборки:</strong> 1) протокол → 2) :// → 3) сервер → 4) .домен → 5) / → 6) имя файла → 7) .расширение</div>`,
+    type:"text",
+    question:"Доступ к файлу data.pdf на сервере science.org осуществляется по протоколу ftp. Фрагменты: А) .pdf  Б) science  В) ftp  Г) ://  Д) .org  Е) /  Ж) data. Запиши последовательность букв:",
+    answer:"ВГБДЕЖА"
+  },
+  {
+    id:9, title:"В2 · Каталоги", tag:"Часть В",
+    theory:`<h3>Навигация по файловой системе</h3>
+<p>Файлы хранятся в каталогах (папках). Путь записывается через <b>\\</b>:</p>
+<span class="formula">C:\\Школа\\Информатика\\Задания</span>
+<ul>
+<li><b>Поднялся на уровень вверх</b> = перешёл в родительскую папку (убираем последний элемент)</li>
+<li><b>Спустился в каталог X</b> = вошёл в подпапку X (добавляем элемент)</li>
+</ul>
+<div class="example"><strong>Пример:</strong> Был в C:\\Музыка\\Рок\\2024.<br>
+Поднялся на 2 вверх → C:\\Музыка<br>
+Спустился в Классика → C:\\Музыка\\Классика<br>
+Спустился в Бетховен → C:\\Музыка\\Классика\\Бетховен</div>`,
+    type:"text",
+    question:"Пользователь работал с каталогом C:\\Проекты\\Физика\\2025\\Лето. Он поднялся на 2 уровня вверх, затем спустился в каталог Химия. Запиши полный путь:",
+    answer:"C:\\Проекты\\Физика\\Химия"
+  },
+  {
+    id:10, title:"В3 · Свойства абзацев", tag:"Часть В",
+    theory:`<h3>Свойства абзацев в текстовом процессоре</h3>
+<p>При форматировании текста абзацы могут иметь следующие свойства:</p>
+<ul>
+<li><b>Отступ первой строки</b> (красная строка) — первая строка абзаца сдвинута вправо</li>
+<li><b>Выступ первой строки</b> — первая строка выступает влево от остального текста</li>
+<li><b>Отступ слева/справа</b> — весь абзац сдвинут от края страницы</li>
+<li><b>Выравнивание по левому краю</b> — текст прижат к левому краю, правый край «рваный»</li>
+<li><b>Выравнивание по правому краю</b> — текст прижат к правому краю</li>
+<li><b>Выравнивание по центру</b> — текст по центру</li>
+<li><b>Выравнивание по ширине</b> — оба края ровные (текст растягивается)</li>
+</ul>
+<div class="example"><strong>Как определить выравнивание по ширине?</strong> Смотри на ПРАВЫЙ край: если он ровный (как левый) — это выравнивание по ширине. Если правый край «рваный» — по левому краю.</div>`,
+    type:"options",
+    question:"Если в тексте есть красная строка и оба края абзаца ровные, то какие свойства присутствуют?",
+    options:["1, 5 (отступ первой строки + по левому краю)","2, 8 (выступ + по ширине)","1, 8 (отступ первой строки + по ширине)","3, 7 (отступ слева + по центру)"],
+    answer:2
+  },
+  {
+    id:11, title:"С1 · Объём текста", tag:"Часть С",
+    theory:`<h3>Информационный объём текста</h3>
+<p>Алгоритм решения задач:</p>
+<p><b>Шаг 1:</b> Найди общее количество символов:</p>
+<span class="formula">K = страницы × строки × символы_в_строке</span>
+<p><b>Шаг 2:</b> Определи информационный вес одного символа:</p>
+<span class="formula">N = 2ⁱ → найди i (бит на символ)<br>Например: N = 256 = 2⁸ → i = 8 бит = 1 байт<br>N = 128 = 2⁷ → i = 7 бит<br>N = 64 = 2⁶ → i = 6 бит</span>
+<p><b>Шаг 3:</b> Вычисли объём:</p>
+<span class="formula">V = K × i (в битах) → переведи в байты (/8) → в Кбайт (/1024)</span>
+<div class="example"><strong>Пример:</strong> 2 стр × 40 строк × 32 символа = 2560 символов. Алфавит 256 → 8 бит = 1 байт. V = 2560 байт = 2,5 Кбайт.</div>`,
+    type:"text",
+    question:"Сообщение занимает 2 страницы по 16 строк, в каждой строке 32 символа. Алфавит 256-символьный. Каков объём в байтах? (только число)",
+    answer:"1024"
+  },
+  {
+    id:12, title:"С2 · Объём графики", tag:"Часть С",
+    theory:`<h3>Объём растрового изображения</h3>
+<p>Алгоритм:</p>
+<p><b>Шаг 1:</b> Определи глубину кодирования цвета:</p>
+<span class="formula">Количество цветов K = 2ⁱ → найди i<br>256 цветов = 2⁸ → i = 8 бит<br>65536 цветов = 2¹⁶ → i = 16 бит<br>16 цветов = 2⁴ → i = 4 бита</span>
+<p><b>Шаг 2:</b> Вычисли количество пикселей:</p>
+<span class="formula">N = ширина × высота</span>
+<p><b>Шаг 3:</b> Объём = N × i (бит) → /8 → /1024 (Кбайт)</p>
+<div class="example"><strong>Пример:</strong> 512 × 256 пикс., 16 цветов. i = 4 бита. V = 512 × 256 × 4 = 524288 бит = 65536 байт = 64 Кбайт.</div>`,
+    type:"text",
+    question:"Растровое изображение 256 × 128 пикселей, 16 цветов. Каков объём в Кбайтах? (только число)",
+    answer:"16"
+  }
+];
+
+let completed = new Set();
+let currentTopic = null;
+let timerSec = 40 * 60;
+let timerInterval;
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timerSec--;
+    if (timerSec <= 0) { clearInterval(timerInterval); timerSec = 0; }
+    const m = Math.floor(timerSec / 60);
+    const s = timerSec % 60;
+    document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (timerSec <= 300) document.getElementById('timer').style.color = '#e17055';
+  }, 1000);
+}
+
+function renderGrid() {
+  const grid = document.getElementById('topics-grid');
+  grid.innerHTML = '';
+  TOPICS.forEach(t => {
+    const btn = document.createElement('div');
+    btn.className = 'topic-btn' + (completed.has(t.id) ? ' done' : '') + (currentTopic === t.id ? ' active' : '');
+    btn.textContent = t.title.split('·')[0].trim();
+    btn.onclick = () => showTopic(t.id);
+    grid.appendChild(btn);
+  });
+}
+
+function updateProgress() {
+  const n = completed.size;
+  document.getElementById('prog-text').textContent = `${n} / ${TOPICS.length}`;
+  document.getElementById('prog-bar').style.width = `${(n / TOPICS.length) * 100}%`;
+}
+
+function showTopic(id) {
+  currentTopic = id;
+  const t = TOPICS.find(x => x.id === id);
+  const area = document.getElementById('topic-area');
+  
+  let practiceHTML = '';
+  if (t.type === 'options') {
+    practiceHTML = `<div class="options" id="opts">` +
+      t.options.map((o, i) => `<div class="opt" data-idx="${i}" onclick="selectOpt(this)">${i+1}) ${o}</div>`).join('') +
+      `</div>`;
+  } else {
+    practiceHTML = `<input type="text" id="ans-input" placeholder="Введи ответ..." onkeydown="if(event.key==='Enter')checkAnswer()">`;
+  }
+
+  area.innerHTML = `
+    <div class="topic-card visible">
+      <h2>${t.title}</h2>
+      <span class="tag">${t.tag}</span>
+      <div class="theory">${t.theory}</div>
+      <div class="practice">
+        <h3>🧩 Тренировочное задание</h3>
+        <div class="question">${t.question}</div>
+        ${practiceHTML}
+        <div class="btn-row">
+          <button class="btn btn-check" onclick="checkAnswer()">Проверить</button>
+          <button class="btn btn-next" id="btn-next" style="display:none" onclick="goNext()">Следующая тема →</button>
+          <button class="btn btn-retry" id="btn-retry" style="display:none" onclick="retry()">Попробовать ещё</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>`;
+  
+  renderGrid();
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectOpt(el) {
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function checkAnswer() {
+  const t = TOPICS.find(x => x.id === currentTopic);
+  const fb = document.getElementById('feedback');
+  let userAnswer, correct;
+
+  if (t.type === 'options') {
+    const sel = document.querySelector('.opt.selected');
+    if (!sel) { fb.textContent = '⚠️ Выбери вариант ответа!'; fb.className = 'feedback show fail'; return; }
+    userAnswer = parseInt(sel.dataset.idx);
+    correct = userAnswer === t.answer;
+    
+    document.querySelectorAll('.opt').forEach((o, i) => {
+      if (i === t.answer) o.classList.add('correct');
+      else if (i === userAnswer && !correct) o.classList.add('wrong');
+    });
+  } else {
+    const input = document.getElementById('ans-input');
+    userAnswer = input.value.trim().toUpperCase().replace(/\s/g, '');
+    const correctAnswer = t.answer.toUpperCase().replace(/\s/g, '');
+    correct = userAnswer === correctAnswer;
+    
+    if (!userAnswer) { fb.textContent = '⚠️ Введи ответ!'; fb.className = 'feedback show fail'; return; }
+  }
+
+  if (correct) {
+    fb.textContent = '✅ Правильно! Отлично!';
+    fb.className = 'feedback show ok';
+    completed.add(t.id);
+    updateProgress();
+    document.getElementById('btn-next').style.display = 'inline-block';
+    document.getElementById('btn-retry').style.display = 'none';
+    
+    if (completed.size === TOPICS.length) {
+      setTimeout(() => {
+        document.getElementById('topic-area').innerHTML = '';
+        document.getElementById('finish').classList.add('visible');
+        document.getElementById('final-score').textContent = '12 / 12 🏆';
+        clearInterval(timerInterval);
+      }, 1000);
+    }
+  } else {
+    fb.textContent = '❌ Неверно. Перечитай теорию и попробуй ещё раз!';
+    fb.className = 'feedback show fail';
+    document.getElementById('btn-retry').style.display = 'inline-block';
+    document.getElementById('btn-next').style.display = 'none';
+  }
+  
+  renderGrid();
+}
+
+function retry() {
+  showTopic(currentTopic);
+}
+
+function goNext() {
+  const idx = TOPICS.findIndex(x => x.id === currentTopic);
+  const nextUndone = TOPICS.find((t, i) => i > idx && !completed.has(t.id));
+  if (nextUndone) showTopic(nextUndone.id);
+  else {
+    const anyUndone = TOPICS.find(t => !completed.has(t.id));
+    if (anyUndone) showTopic(anyUndone.id);
+  }
+}
+
+// Init
+renderGrid();
+updateProgress();
+startTimer();
+showTopic(1);
+</script>
+</body>
+</html>
